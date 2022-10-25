@@ -1,7 +1,8 @@
 
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import *
-from sqlshot import sqlqueryselecttbl, sqlquerytitlesearch
+from sqlshot import sqlqueryselecttbl, sqlquerytitlesearch, sqlquerysaverecord, \
+     sqlqueryisbnsearch
 
 
 app = QtWidgets.QApplication([])
@@ -71,6 +72,36 @@ def mainsaveentry():
     mymain.pbdelete.setEnabled(True)
     mymain.pbaddnew.setEnabled(True)
     mymain.pbedit.setEnabled(True)
+    
+    mymain.edittitle.setReadOnly(True)
+    mymain.editisbn.setReadOnly(True)
+    mymain.editborrowedtime.setReadOnly(True)
+    mymain.editauthor.setReadOnly(True)
+    mymain.editborrower.setReadOnly(True)
+    
+    isbn = mymain.editisbn.text()
+    title = mymain.edittitle.text()
+    borrowed = mymain.editborrowedtime.text()
+    author = mymain.editauthor.text()
+    borrower = mymain.editborrower.text()
+    
+    sqlquerysaverecord(isbn, title, borrowed, author, borrower)
+    
+    searched = sqlqueryisbnsearch(isbn)
+    
+    mymain.tbllibrary.setItem(0,0, QTableWidgetItem(str(searched[0])))
+    mymain.tbllibrary.setItem(0,1, QTableWidgetItem(str(searched[1])))
+    mymain.tbllibrary.setItem(0,2, QTableWidgetItem(searched[2]))
+    mymain.tbllibrary.setItem(0,3, QTableWidgetItem(searched[3]))
+    mymain.tbllibrary.setItem(0,4, QTableWidgetItem(searched[4]))
+    mymain.tbllibrary.setItem(0,5, QTableWidgetItem(searched[5]))
+        
+    mymain.editid.setText(str(searched[0]))
+    mymain.editisbn.setText(str(searched[1]))
+    mymain.edittitle.setText(searched[2])
+    mymain.editauthor.setText(searched[3])
+    mymain.editborrowedtime.setText(searched[4])
+    mymain.editborrower.setText(searched[5])
 
 def mainaddnewentry():     #mymain
     mymain.pbcancel.setEnabled(True)
@@ -127,6 +158,7 @@ def maineditentry():
     mymain.editborrower.setReadOnly(False)
 
 def mainsearchentry():
+    
     mysearch = mymain.editsearch.text()
     searched = sqlquerytitlesearch(mysearch)
     
@@ -146,6 +178,8 @@ def mainsearchentry():
         mymain.editauthor.setText(searched[3])
         mymain.editborrowedtime.setText(searched[4])
         mymain.editborrower.setText(searched[5])
+        
+        del mysearch, searched
     
 def unloadnofoundnote():
     nofoundnote.setHidden(True)
