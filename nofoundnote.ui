@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>NOTE</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Images/we.ico</normaloff>Images/we.ico</iconset>
+  </property>
   <widget class="QLabel" name="lblnofoundnote">
    <property name="geometry">
     <rect>

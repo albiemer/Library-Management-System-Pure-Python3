@@ -2,7 +2,7 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import *
 from sqlshot import sqlqueryselecttbl, sqlquerytitlesearch, sqlquerysaverecord, \
-     sqlqueryisbnsearch
+     sqlqueryisbnsearch, sqlquerysaveupdateentry, sqlquerycountlastid
 
 
 app = QtWidgets.QApplication([])
@@ -10,6 +10,22 @@ loginform = uic.loadUi("loginui.ui")
 mymain = uic.loadUi("mainui.ui")
 nofoundnote = uic.loadUi("nofoundnote.ui")
 
+def reloadgrid():
+    
+    mymain.tbllibrary.update()
+    
+    re = sqlqueryselecttbl()
+    
+    for row in re:
+        inx = re.index(row)
+        mymain.tbllibrary.insertRow(inx)
+        # add more if there is more columns in the database.
+        mymain.tbllibrary.setItem(inx, 0, QTableWidgetItem(str(row[0])))
+        mymain.tbllibrary.setItem(inx, 1, QTableWidgetItem(str(row[1])))
+        mymain.tbllibrary.setItem(inx, 2, QTableWidgetItem(row[2]))
+        mymain.tbllibrary.setItem(inx, 3, QTableWidgetItem(row[3]))
+        mymain.tbllibrary.setItem(inx, 4, QTableWidgetItem(row[4]))
+        mymain.tbllibrary.setItem(inx, 5, QTableWidgetItem(row[5]))
 
 def mylogin():   #loginform
     myuser = loginform.edituser.text()
@@ -33,6 +49,7 @@ def mylogin():   #loginform
 def mainformuifunc():    #main form of this program
     mymain.show()
     
+    mymain.tbllibrary.update()
     
     re = sqlqueryselecttbl()
     
@@ -54,19 +71,31 @@ def mainformuifunc():    #main form of this program
     mymain.tbllibrary.setItem(0,4, QTableWidgetItem(re[4]))
     mymain.tbllibrary.setItem(0,5, QTableWidgetItem(re[5]))"""
     
-    mymain.editid.setText(str(re[0][0]))
-    mymain.editisbn.setText(str(re[0][1]))
-    mymain.edittitle.setText(re[0][2])
-    mymain.editauthor.setText(re[0][3])
-    mymain.editborrowedtime.setText(re[0][4])
-    mymain.editborrower.setText(re[0][5])
+    try:
+        mymain.editid.setText(str(re[0][0]))
+        mymain.editisbn.setText(str(re[0][1]))
+        mymain.edittitle.setText(re[0][2])
+        mymain.editauthor.setText(re[0][3])
+        mymain.editborrowedtime.setText(re[0][4])
+        mymain.editborrower.setText(re[0][5])
+    except:
+        mymain.editid.clear()
+        mymain.editisbn.clear()
+        mymain.edittitle.clear()
+        mymain.editauthor.clear()
+        mymain.editborrowedtime.clear()
+        mymain.editborrower.clear()
 
     mymain.editsearch.setFocus()
+    mymain.pbupdate.setHidden(True)
 
 def cancellogin(): # loginform
     exit()
 
 def mainsaveentry():
+    
+    tosearchserved = mymain.edittitle.text()
+    
     mymain.pbcancel.setEnabled(False)
     mymain.pbsave.setEnabled(False)
     mymain.pbdelete.setEnabled(True)
@@ -89,13 +118,29 @@ def mainsaveentry():
     
     searched = sqlqueryisbnsearch(isbn)
     
-    mymain.tbllibrary.setItem(0,0, QTableWidgetItem(str(searched[0])))
-    mymain.tbllibrary.setItem(0,1, QTableWidgetItem(str(searched[1])))
-    mymain.tbllibrary.setItem(0,2, QTableWidgetItem(searched[2]))
-    mymain.tbllibrary.setItem(0,3, QTableWidgetItem(searched[3]))
-    mymain.tbllibrary.setItem(0,4, QTableWidgetItem(searched[4]))
-    mymain.tbllibrary.setItem(0,5, QTableWidgetItem(searched[5]))
-        
+    mymain.tbllibrary.update()
+    
+    re = sqlqueryselecttbl()
+    
+    for row in re:
+        inx = re.index(row)
+        mymain.tbllibrary.insertRow(inx)
+        # add more if there is more columns in the database.
+        mymain.tbllibrary.setItem(inx, 0, QTableWidgetItem(str(row[0])))
+        mymain.tbllibrary.setItem(inx, 1, QTableWidgetItem(str(row[1])))
+        mymain.tbllibrary.setItem(inx, 2, QTableWidgetItem(row[2]))
+        mymain.tbllibrary.setItem(inx, 3, QTableWidgetItem(row[3]))
+        mymain.tbllibrary.setItem(inx, 4, QTableWidgetItem(row[4]))
+        mymain.tbllibrary.setItem(inx, 5, QTableWidgetItem(row[5]))
+    
+    searched = sqlquerytitlesearch(tosearchserved)
+    mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
+    mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
+    mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
+    mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
+    mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
+    mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
+    
     mymain.editid.setText(str(searched[0]))
     mymain.editisbn.setText(str(searched[1]))
     mymain.edittitle.setText(searched[2])
@@ -103,7 +148,50 @@ def mainsaveentry():
     mymain.editborrowedtime.setText(searched[4])
     mymain.editborrower.setText(searched[5])
 
+def mainupdateentry():
+    mainid = mymain.editid.text()
+    isbn = mymain.editisbn.text()
+    title = mymain.edittitle.text()
+    author = mymain.editauthor.text()
+    btime = mymain.editborrowedtime.text()
+    borrower = mymain.editborrower.text()
+    
+    mymain.pbcancel.setEnabled(False)
+    mymain.pbupdate.setEnabled(False)
+    mymain.pbdelete.setEnabled(True)
+    mymain.pbaddnew.setEnabled(True)
+    mymain.pbedit.setEnabled(True)
+    
+    mymain.edittitle.setReadOnly(True)
+    mymain.editisbn.setReadOnly(True)
+    mymain.editborrowedtime.setReadOnly(True)
+    mymain.editauthor.setReadOnly(True)
+    mymain.editborrower.setReadOnly(True)
+    
+    sqlquerysaveupdateentry(mainid, isbn, title, author, btime, borrower)
+    
+    reloadgrid()
+    
+    searched = sqlquerytitlesearch(title)
+    mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
+    mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
+    mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
+    mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
+    mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
+    mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
+
 def mainaddnewentry():     #mymain
+    
+    mymain.pbsave.setHidden(False)
+    mymain.pbupdate.setHidden(True)
+    
+    gmainid = mymain.editid.text()
+    gisbn = mymain.editisbn.text()
+    gtitle = mymain.edittitle.text()
+    gbtime = mymain.editborrowedtime.text()
+    gauthor = mymain.editauthor.text()
+    gborrower = mymain.editborrower.text()
+    
     mymain.pbcancel.setEnabled(True)
     mymain.pbaddnew.setEnabled(False)
     mymain.pbdelete.setEnabled(False)
@@ -131,12 +219,18 @@ def mainlogout():
     loginform.lblnote.setHidden(False)
     loginform.lblnote.setText("Are You Off Now You Asshole?")
 
+
 def maincancelentry():
+    
+    mymain.pbupdate.setHidden(True)
+    mymain.pbsave.setHidden(False)
+    
     mymain.pbcancel.setEnabled(False)
     mymain.pbaddnew.setEnabled(True)
     mymain.pbdelete.setEnabled(True)
     mymain.pbedit.setEnabled(True)
     mymain.pbsave.setEnabled(False)
+    mymain.pbupdate.setEnabled(True)
     
     mymain.edittitle.setReadOnly(True)
     mymain.editisbn.setReadOnly(True)
@@ -144,8 +238,14 @@ def maincancelentry():
     mymain.editauthor.setReadOnly(True)
     mymain.editborrower.setReadOnly(True)
     
+    
 def maineditentry():
-    mymain.pbsave.setEnabled(True)
+    
+    mymain.pbsave.setHidden(True)
+    mymain.pbupdate.setHidden(False)
+    
+    mymain.pbupdate.setEnabled(True)
+    mymain.pbsave.setEnabled(False)
     mymain.pbaddnew.setEnabled(False)
     mymain.pbcancel.setEnabled(True)
     mymain.pbedit.setEnabled(False)
@@ -165,12 +265,12 @@ def mainsearchentry():
     if searched == None:
         nofoundnote.show()
     else:
-        mymain.tbllibrary.setItem(0,0, QTableWidgetItem(str(searched[0])))
-        mymain.tbllibrary.setItem(0,1, QTableWidgetItem(str(searched[1])))
-        mymain.tbllibrary.setItem(0,2, QTableWidgetItem(searched[2]))
-        mymain.tbllibrary.setItem(0,3, QTableWidgetItem(searched[3]))
-        mymain.tbllibrary.setItem(0,4, QTableWidgetItem(searched[4]))
-        mymain.tbllibrary.setItem(0,5, QTableWidgetItem(searched[5]))
+        mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
+        mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
+        mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
+        mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
+        mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
+        mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
         
         mymain.editid.setText(str(searched[0]))
         mymain.editisbn.setText(str(searched[1]))
@@ -180,6 +280,9 @@ def mainsearchentry():
         mymain.editborrower.setText(searched[5])
         
         del mysearch, searched
+    
+        reloadgrid()
+    
     
 def unloadnofoundnote():
     nofoundnote.setHidden(True)
@@ -197,6 +300,7 @@ mymain.pbcancel.clicked.connect(maincancelentry)###### MAIN FORM BUTTON ######
 mymain.pbsave.clicked.connect(mainsaveentry)##################################
 mymain.pbedit.clicked.connect(maineditentry)##################################
 mymain.pbsearch.clicked.connect(mainsearchentry)##############################
+mymain.pbupdate.clicked.connect(mainupdateentry)##############################
 ##############################################################################
 
 ####################################################################################

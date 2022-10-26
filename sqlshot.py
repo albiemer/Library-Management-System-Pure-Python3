@@ -11,7 +11,7 @@ def sqlqueryselecttbl():
     # To close database after execute from searchfunction()
     conn.close()
     return row
-#print(sqlquerysearch()[0])
+#print(sqlqueryselecttbl()[0])
 
 def sqlqueryinsertrecord():
     conn = sqlite3.connect('lms.db')
@@ -35,3 +35,39 @@ def sqlquerytitlesearch(mysearch):
     return result
 
 #print(sqlquerytitlesearch())
+
+def sqlqueryisbnsearch(mysearch):
+    conn = sqlite3.connect('lms.db')
+    c = conn.cursor()
+    c.execute("select * from books_table where Isbn=(?)", (mysearch, ))
+    result = c.fetchone()
+    conn.close()
+    return result
+#print(sqlqueryisbnsearch())
+
+def sqlquerysaverecord(*saverec):
+    conn = sqlite3.connect('lms.db')
+    c = conn.cursor()
+    c.execute("insert into books_table(Isbn, Title, Author, Borrowed, Borrower) values(?,?,?,?,?)", \
+              (saverec[0], saverec[1], saverec[2], saverec[3], saverec[4]))
+    conn.commit()
+    conn.close()
+    
+def sqlquerysaveupdateentry(*toupdate):
+    conn = sqlite3.connect('lms.db')
+    c = conn.cursor()
+    c.execute("update books_table set Isbn = ?, Title = ?, Author = ?, Borrowed = ?, Borrower = ? where ID = ?", \
+              (toupdate[1], toupdate[2], toupdate[3], toupdate[4], toupdate[5], toupdate[0]))
+    conn.commit()
+    conn.close()
+    
+def sqlquerycountlastid():
+    conn = sqlite3.connect('lms.db')
+    c = conn.cursor()
+    c.execute("select * from books_table order by ID desc limit 1")
+    row = c.fetchone()
+    conn.commit()
+    conn.close()
+    return row
+
+#print(type(sqlquerycountlastid()[0]))
