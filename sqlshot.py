@@ -48,7 +48,7 @@ def sqlqueryisbnsearch(mysearch):
 def sqlquerysaverecord(*saverec):
     conn = sqlite3.connect('lms.db')
     c = conn.cursor()
-    c.execute("insert into books_table(Isbn, Title, Author, Borrowed, Borrower) values(?,?,?,?,?)", \
+    c.execute("insert into books_table(Isbn, Title, Borrowed, Author, Borrower) values(?,?,?,?,?)", \
               (saverec[0], saverec[1], saverec[2], saverec[3], saverec[4]))
     conn.commit()
     conn.close()
@@ -71,3 +71,23 @@ def sqlquerycountlastid():
     return row
 
 #print(type(sqlquerycountlastid()[0]))
+
+
+def sqlqueryidsearchset(mysearchid):
+    conn = sqlite3.connect('lms.db')
+    c = conn.cursor()
+    c.execute("select * from books_table where Id=(?)", (mysearchid, ))
+    result = c.fetchone()
+    conn.close()
+    return result
+#print(sqlqueryidsearchset(49))
+
+def sqlquerydeleterec(todelete):
+    conn = sqlite3.connect('lms.db')
+    c = conn.cursor()
+    c.execute("delete from books_table where ID = ?", (todelete,))
+    conn.commit()
+    conn.close()
+    print("\nDELETED SUCCESSFUL, PRESS ENTER TO REFRESH THE RECORD")
+
+#sqlquerydeleterec(53)

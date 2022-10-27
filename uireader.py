@@ -2,7 +2,9 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import *
 from sqlshot import sqlqueryselecttbl, sqlquerytitlesearch, sqlquerysaverecord, \
-     sqlqueryisbnsearch, sqlquerysaveupdateentry, sqlquerycountlastid
+     sqlqueryisbnsearch, sqlquerysaveupdateentry, sqlquerycountlastid, sqlqueryidsearchset, \
+     sqlquerydeleterec
+import time
 
 
 app = QtWidgets.QApplication([])
@@ -12,7 +14,7 @@ nofoundnote = uic.loadUi("nofoundnote.ui")
 
 def reloadgrid():
     
-    mymain.tbllibrary.update()
+    mymain.tbllibrary.clear()
     
     re = sqlqueryselecttbl()
     
@@ -26,7 +28,9 @@ def reloadgrid():
         mymain.tbllibrary.setItem(inx, 3, QTableWidgetItem(row[3]))
         mymain.tbllibrary.setItem(inx, 4, QTableWidgetItem(row[4]))
         mymain.tbllibrary.setItem(inx, 5, QTableWidgetItem(row[5]))
-
+        
+def myloginsetfocustopass(): loginform.editpass.setFocus()
+def myloginsetfocustouser(): loginform.edituser.setFocus()
 def mylogin():   #loginform
     myuser = loginform.edituser.text()
     mypass = loginform.editpass.text()
@@ -45,7 +49,7 @@ def mylogin():   #loginform
         loginform.lblnote.setHidden(False)
         loginform.lblnote.setText("!Wrong Password")
         
-
+        
 def mainformuifunc():    #main form of this program
     mymain.show()
     
@@ -53,16 +57,7 @@ def mainformuifunc():    #main form of this program
     
     re = sqlqueryselecttbl()
     
-    for row in re:
-        inx = re.index(row)
-        mymain.tbllibrary.insertRow(inx)
-        # add more if there is more columns in the database.
-        mymain.tbllibrary.setItem(inx, 0, QTableWidgetItem(str(row[0])))
-        mymain.tbllibrary.setItem(inx, 1, QTableWidgetItem(str(row[1])))
-        mymain.tbllibrary.setItem(inx, 2, QTableWidgetItem(row[2]))
-        mymain.tbllibrary.setItem(inx, 3, QTableWidgetItem(row[3]))
-        mymain.tbllibrary.setItem(inx, 4, QTableWidgetItem(row[4]))
-        mymain.tbllibrary.setItem(inx, 5, QTableWidgetItem(row[5]))
+    reloadgrid()
     
     """mymain.tbllibrary.setItem(0,0, QTableWidgetItem(str(re[0])))
     mymain.tbllibrary.setItem(0,1, QTableWidgetItem(str(re[1])))
@@ -88,6 +83,7 @@ def mainformuifunc():    #main form of this program
 
     mymain.editsearch.setFocus()
     mymain.pbupdate.setHidden(True)
+    mymain.editidhideover.setHidden(True)
 
 def cancellogin(): # loginform
     exit()
@@ -95,6 +91,9 @@ def cancellogin(): # loginform
 def mainsaveentry():
     
     tosearchserved = mymain.edittitle.text()
+    
+    mymain.editidhideover.setHidden(True)
+    mymain.editid.setHidden(False)
     
     mymain.pbcancel.setEnabled(False)
     mymain.pbsave.setEnabled(False)
@@ -118,20 +117,7 @@ def mainsaveentry():
     
     searched = sqlqueryisbnsearch(isbn)
     
-    mymain.tbllibrary.update()
-    
-    re = sqlqueryselecttbl()
-    
-    for row in re:
-        inx = re.index(row)
-        mymain.tbllibrary.insertRow(inx)
-        # add more if there is more columns in the database.
-        mymain.tbllibrary.setItem(inx, 0, QTableWidgetItem(str(row[0])))
-        mymain.tbllibrary.setItem(inx, 1, QTableWidgetItem(str(row[1])))
-        mymain.tbllibrary.setItem(inx, 2, QTableWidgetItem(row[2]))
-        mymain.tbllibrary.setItem(inx, 3, QTableWidgetItem(row[3]))
-        mymain.tbllibrary.setItem(inx, 4, QTableWidgetItem(row[4]))
-        mymain.tbllibrary.setItem(inx, 5, QTableWidgetItem(row[5]))
+    reloadgrid()
     
     searched = sqlquerytitlesearch(tosearchserved)
     mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
@@ -182,6 +168,8 @@ def mainupdateentry():
 
 def mainaddnewentry():     #mymain
     
+    mymain.editborrowedtime.setText(time.asctime())
+    
     mymain.pbsave.setHidden(False)
     mymain.pbupdate.setHidden(True)
     
@@ -204,10 +192,11 @@ def mainaddnewentry():     #mymain
     mymain.editauthor.setReadOnly(False)
     mymain.editborrower.setReadOnly(False)
     
-    mymain.editid.clear()
+    mymain.editidhideover.setHidden(False)
+    mymain.editid.setHidden(True)
     mymain.edittitle.clear()
     mymain.editisbn.clear()
-    mymain.editborrowedtime.clear()
+    #mymain.editborrowedtime.clear()
     mymain.editauthor.clear()
     mymain.editborrower.clear()
     
@@ -221,7 +210,10 @@ def mainlogout():
 
 
 def maincancelentry():
+    mysearchid = mymain.editid.text()
     
+    mymain.editidhideover.setHidden(True)
+    mymain.editid.setHidden(False)
     mymain.pbupdate.setHidden(True)
     mymain.pbsave.setHidden(False)
     
@@ -238,6 +230,14 @@ def maincancelentry():
     mymain.editauthor.setReadOnly(True)
     mymain.editborrower.setReadOnly(True)
     
+    toset = sqlqueryidsearchset(mysearchid)
+    
+    mymain.editid.setText(str(toset[0]))
+    mymain.editisbn.setText(str(toset[1]))
+    mymain.edittitle.setText(toset[2])
+    mymain.editauthor.setText(toset[3])
+    mymain.editborrowedtime.setText(toset[4])
+    mymain.editborrower.setText(toset[5])
     
 def maineditentry():
     
@@ -281,9 +281,33 @@ def mainsearchentry():
         
         del mysearch, searched
     
-        reloadgrid()
+        mymain.tbllibrary.update()
     
+def mymaindeleterec():
+    todeleteid = mymain.editid.text()
+    sqlquerydeleterec(todeleteid)
     
+    re = sqlqueryselecttbl()
+    
+    reloadgrid()
+    
+    try:
+        mymain.editid.setText(str(re[0][0]))
+        mymain.editisbn.setText(str(re[0][1]))
+        mymain.edittitle.setText(re[0][2])
+        mymain.editauthor.setText(re[0][3])
+        mymain.editborrowedtime.setText(re[0][4])
+        mymain.editborrower.setText(re[0][5])
+    except:
+        mymain.editid.clear()
+        mymain.editisbn.clear()
+        mymain.edittitle.clear()
+        mymain.editauthor.clear()
+        mymain.editborrowedtime.clear()
+        mymain.editborrower.clear()
+    
+    mymain.tbllibrary.update()
+
 def unloadnofoundnote():
     nofoundnote.setHidden(True)
     mymain.tbllibrary.update()
@@ -291,6 +315,9 @@ def unloadnofoundnote():
 ##############################################################################
 loginform.pblogin.clicked.connect(mylogin)####################################
 loginform.pbcancel.clicked.connect(cancellogin)####### LOGIN FORM BUTTON #####
+loginform.editpass.returnPressed.connect(mylogin)#############################
+loginform.edituser.returnPressed.connect(myloginsetfocustopass)###############
+loginform.editpass.returnPressed.connect(myloginsetfocustouser)###############
 ##############################################################################
 
 ##############################################################################
@@ -301,6 +328,8 @@ mymain.pbsave.clicked.connect(mainsaveentry)##################################
 mymain.pbedit.clicked.connect(maineditentry)##################################
 mymain.pbsearch.clicked.connect(mainsearchentry)##############################
 mymain.pbupdate.clicked.connect(mainupdateentry)##############################
+mymain.editsearch.returnPressed.connect(mainsearchentry)######################
+mymain.pbdelete.clicked.connect(mymaindeleterec)##############################
 ##############################################################################
 
 ####################################################################################
