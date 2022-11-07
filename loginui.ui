@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>366</width>
-    <height>243</height>
+    <height>305</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,16 +21,16 @@
    <widget class="QLabel" name="lblogin">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>150</x>
       <y>10</y>
-      <width>81</width>
+      <width>91</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Bitstream Charter</family>
-      <pointsize>18</pointsize>
+      <pointsize>22</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -44,8 +44,8 @@
      <rect>
       <x>20</x>
       <y>60</y>
-      <width>91</width>
-      <height>31</height>
+      <width>51</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -57,16 +57,22 @@
      </font>
     </property>
     <property name="text">
-     <string>Username</string>
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>Images/userlogo.jpg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="lblpassword">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>100</y>
-      <width>91</width>
-      <height>31</height>
+      <y>130</y>
+      <width>51</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -78,17 +84,31 @@
      </font>
     </property>
     <property name="text">
-     <string>Password</string>
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>Images/passlogo.jpg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="pblogin">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>145</y>
-      <width>111</width>
-      <height>31</height>
+      <x>70</x>
+      <y>190</y>
+      <width>131</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Bitstream Charter</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="text">
      <string>Login</string>
@@ -97,11 +117,19 @@
    <widget class="QLineEdit" name="edituser">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>71</x>
       <y>60</y>
-      <width>231</width>
-      <height>31</height>
+      <width>271</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Bitstream Charter</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="inputMask">
      <string/>
@@ -109,15 +137,26 @@
     <property name="text">
      <string/>
     </property>
+    <property name="placeholderText">
+     <string>Username</string>
+    </property>
    </widget>
    <widget class="QLineEdit" name="editpass">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>100</y>
-      <width>231</width>
-      <height>31</height>
+      <x>71</x>
+      <y>130</y>
+      <width>271</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Bitstream Charter</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="inputMask">
      <string/>
@@ -125,15 +164,26 @@
     <property name="echoMode">
      <enum>QLineEdit::Password</enum>
     </property>
+    <property name="placeholderText">
+     <string>Password</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="pbcancel">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>145</y>
-      <width>111</width>
-      <height>31</height>
+      <x>210</x>
+      <y>190</y>
+      <width>131</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Bitstream Charter</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="text">
      <string>Cancel</string>
@@ -143,7 +193,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>200</y>
+      <y>260</y>
       <width>321</width>
       <height>20</height>
      </rect>

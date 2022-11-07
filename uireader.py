@@ -11,6 +11,7 @@ app = QtWidgets.QApplication([])
 loginform = uic.loadUi("loginui.ui")
 mymain = uic.loadUi("mainui.ui")
 nofoundnote = uic.loadUi("nofoundnote.ui")
+noteedittitleblank = uic.loadUi("noteedittitle.ui")
 
 def reloadgrid():
     
@@ -90,49 +91,56 @@ def cancellogin(): # loginform
 
 def mainsaveentry():
     
-    tosearchserved = mymain.edittitle.text()
-    
-    mymain.editidhideover.setHidden(True)
-    mymain.editid.setHidden(False)
-    
-    mymain.pbcancel.setEnabled(False)
-    mymain.pbsave.setEnabled(False)
-    mymain.pbdelete.setEnabled(True)
-    mymain.pbaddnew.setEnabled(True)
-    mymain.pbedit.setEnabled(True)
-    
-    mymain.edittitle.setReadOnly(True)
-    mymain.editisbn.setReadOnly(True)
-    mymain.editborrowedtime.setReadOnly(True)
-    mymain.editauthor.setReadOnly(True)
-    mymain.editborrower.setReadOnly(True)
-    
-    isbn = mymain.editisbn.text()
     title = mymain.edittitle.text()
-    borrowed = mymain.editborrowedtime.text()
-    author = mymain.editauthor.text()
-    borrower = mymain.editborrower.text()
     
-    sqlquerysaverecord(isbn, title, borrowed, author, borrower)
+    if title == "":
+        noteedittitleblank.show()
+    else:
+        tosearchserved = mymain.edittitle.text()
     
-    searched = sqlqueryisbnsearch(isbn)
+        mymain.editidhideover.setHidden(True)
+        mymain.editid.setHidden(False)
     
-    reloadgrid()
+        mymain.pbcancel.setEnabled(False)
+        mymain.pbsave.setEnabled(False)
+        mymain.pbdelete.setEnabled(True)
+        mymain.pbaddnew.setEnabled(True)
+        mymain.pbedit.setEnabled(True)
     
-    searched = sqlquerytitlesearch(tosearchserved)
-    mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
-    mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
-    mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
-    mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
-    mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
-    mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
+        mymain.edittitle.setReadOnly(True)
+        mymain.editisbn.setReadOnly(True)
+        mymain.editborrowedtime.setReadOnly(True)
+        mymain.editauthor.setReadOnly(True)
+        mymain.editborrower.setReadOnly(True)
     
-    mymain.editid.setText(str(searched[0]))
-    mymain.editisbn.setText(str(searched[1]))
-    mymain.edittitle.setText(searched[2])
-    mymain.editauthor.setText(searched[3])
-    mymain.editborrowedtime.setText(searched[4])
-    mymain.editborrower.setText(searched[5])
+        isbn = mymain.editisbn.text()
+        title = mymain.edittitle.text()
+        borrowed = mymain.editborrowedtime.text()
+        author = mymain.editauthor.text()
+        borrower = mymain.editborrower.text()
+    
+        sqlquerysaverecord(isbn, title, borrowed, author, borrower)
+    
+        searched = sqlqueryisbnsearch(isbn)
+    
+        reloadgrid()
+    
+        searched = sqlquerytitlesearch(tosearchserved)
+        mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
+        mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
+        mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
+        mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
+        mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
+        mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
+    
+        mymain.editid.setText(str(searched[0]))
+        mymain.editisbn.setText(str(searched[1]))
+        mymain.edittitle.setText(searched[2])
+        mymain.editauthor.setText(searched[3])
+        mymain.editborrowedtime.setText(searched[4])
+        mymain.editborrower.setText(searched[5])
+    
+        mymain.editsearch.setFocus()
 
 def mainupdateentry():
     mainid = mymain.editid.text()
@@ -191,6 +199,7 @@ def mainaddnewentry():     #mymain
     mymain.editborrowedtime.setReadOnly(False)
     mymain.editauthor.setReadOnly(False)
     mymain.editborrower.setReadOnly(False)
+    mymain.editborrowedtime.setReadOnly(True)
     
     mymain.editidhideover.setHidden(False)
     mymain.editid.setHidden(True)
@@ -199,6 +208,8 @@ def mainaddnewentry():     #mymain
     #mymain.editborrowedtime.clear()
     mymain.editauthor.clear()
     mymain.editborrower.clear()
+    
+    mymain.editisbn.setFocus()
     
 def mainlogout():
     mymain.setHidden(True)
@@ -307,34 +318,63 @@ def mymaindeleterec():
         mymain.editborrower.clear()
     
     mymain.tbllibrary.update()
+    mymain.editsearch.setFocus()
 
 def unloadnofoundnote():
     nofoundnote.setHidden(True)
     mymain.tbllibrary.update()
 
-##############################################################################
-loginform.pblogin.clicked.connect(mylogin)####################################
-loginform.pbcancel.clicked.connect(cancellogin)####### LOGIN FORM BUTTON #####
-loginform.editpass.returnPressed.connect(mylogin)#############################
-loginform.edituser.returnPressed.connect(myloginsetfocustopass)###############
-loginform.editpass.returnPressed.connect(myloginsetfocustouser)###############
-##############################################################################
+class tosetfocus:
+    def settoedittitle(): mymain.edittitle.setFocus()
+    def settoeditauthor(): mymain.editauthor.setFocus() 
+    def settoeditborrower(): mymain.editborrower.setFocus()
 
-##############################################################################
-mymain.pblogout.clicked.connect(mainlogout)###################################
-mymain.pbaddnew.clicked.connect(mainaddnewentry)##############################
-mymain.pbcancel.clicked.connect(maincancelentry)###### MAIN FORM BUTTON ######
-mymain.pbsave.clicked.connect(mainsaveentry)##################################
-mymain.pbedit.clicked.connect(maineditentry)##################################
-mymain.pbsearch.clicked.connect(mainsearchentry)##############################
-mymain.pbupdate.clicked.connect(mainupdateentry)##############################
-mymain.editsearch.returnPressed.connect(mainsearchentry)######################
-mymain.pbdelete.clicked.connect(mymaindeleterec)##############################
-##############################################################################
+def tounshownoteatleasttitle():
+    noteedittitleblank.setHidden(True)
+    mymain.edittitle.setFocus()
 
-####################################################################################
-nofoundnote.pbnoteok.clicked.connect(unloadnofoundnote)## NOFOUNDNOTE FORM BUTTON ##
-####################################################################################
+#################################################################
+##################### LOGIN FORM BUTTON #########################
+#################################################################
+loginform.pblogin.clicked.connect(mylogin)#######################
+loginform.pbcancel.clicked.connect(cancellogin)##################
+loginform.editpass.returnPressed.connect(mylogin)################
+loginform.edituser.returnPressed.connect(myloginsetfocustopass)##
+loginform.editpass.returnPressed.connect(myloginsetfocustouser)##
+#################################################################
+
+###################################################
+################ MAIN FORM BUTTON #################
+###################################################
+mymain.pblogout.clicked.connect(mainlogout)########
+mymain.pbaddnew.clicked.connect(mainaddnewentry)###
+mymain.pbcancel.clicked.connect(maincancelentry)###
+mymain.pbsave.clicked.connect(mainsaveentry)#######
+mymain.pbedit.clicked.connect(maineditentry)#######
+mymain.pbsearch.clicked.connect(mainsearchentry)###
+mymain.pbupdate.clicked.connect(mainupdateentry)###
+mymain.pbdelete.clicked.connect(mymaindeleterec)###
+###################################################
+
+#######################################################################
+########################## MAIN RETURN PRESSED ########################
+#######################################################################
+mymain.editsearch.returnPressed.connect(mainsearchentry)###############
+mymain.editisbn.returnPressed.connect(tosetfocus.settoedittitle)#######
+mymain.edittitle.returnPressed.connect(tosetfocus.settoeditauthor)#####
+mymain.editauthor.returnPressed.connect(tosetfocus.settoeditborrower)##
+mymain.editborrower.returnPressed.connect(mainsaveentry)###############
+#######################################################################
+
+##########################################################
+############ NOFOUNDNOTE FORM BUTTON #####################
+##########################################################
+nofoundnote.pbnoteok.clicked.connect(unloadnofoundnote)###
+##########################################################
+
+##########################################################
+########### NOTE EDITTILE FORM BUTTON#####################
+noteedittitleblank.pbatleastfilledtitle.clicked.connect(tounshownoteatleasttitle)
 
 if __name__ == '__main__':
     loginform.show()
