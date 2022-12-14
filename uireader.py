@@ -95,6 +95,7 @@ def mainsaveentry():
     
     if title == "":
         noteedittitleblank.show()
+        noteedittitleblank.pbatleastfilledtitle.setFocus()
     else:
         tosearchserved = mymain.edittitle.text()
     
@@ -106,6 +107,7 @@ def mainsaveentry():
         mymain.pbdelete.setEnabled(True)
         mymain.pbaddnew.setEnabled(True)
         mymain.pbedit.setEnabled(True)
+        mymain.pbupdate.setEnabled(False)
     
         mymain.edittitle.setReadOnly(True)
         mymain.editisbn.setReadOnly(True)
@@ -143,36 +145,43 @@ def mainsaveentry():
         mymain.editsearch.setFocus()
 
 def mainupdateentry():
-    mainid = mymain.editid.text()
-    isbn = mymain.editisbn.text()
+    
     title = mymain.edittitle.text()
-    author = mymain.editauthor.text()
-    btime = mymain.editborrowedtime.text()
-    borrower = mymain.editborrower.text()
     
-    mymain.pbcancel.setEnabled(False)
-    mymain.pbupdate.setEnabled(False)
-    mymain.pbdelete.setEnabled(True)
-    mymain.pbaddnew.setEnabled(True)
-    mymain.pbedit.setEnabled(True)
+    if title == "":
+        noteedittitleblank.show()
+        noteedittitleblank.pbatleastfilledtitle.setFocus()
+    else:
+        mainid = mymain.editid.text()
+        isbn = mymain.editisbn.text()
+        title = mymain.edittitle.text()
+        author = mymain.editauthor.text()
+        btime = mymain.editborrowedtime.text()
+        borrower = mymain.editborrower.text()
     
-    mymain.edittitle.setReadOnly(True)
-    mymain.editisbn.setReadOnly(True)
-    mymain.editborrowedtime.setReadOnly(True)
-    mymain.editauthor.setReadOnly(True)
-    mymain.editborrower.setReadOnly(True)
+        mymain.pbcancel.setEnabled(False)
+        mymain.pbupdate.setEnabled(False)
+        mymain.pbdelete.setEnabled(True)
+        mymain.pbaddnew.setEnabled(True)
+        mymain.pbedit.setEnabled(True)
     
-    sqlquerysaveupdateentry(mainid, isbn, title, author, btime, borrower)
+        mymain.edittitle.setReadOnly(True)
+        mymain.editisbn.setReadOnly(True)
+        mymain.editborrowedtime.setReadOnly(True)
+        mymain.editauthor.setReadOnly(True)
+        mymain.editborrower.setReadOnly(True)
     
-    reloadgrid()
+        sqlquerysaveupdateentry(mainid, isbn, title, author, btime, borrower)
     
-    searched = sqlquerytitlesearch(title)
-    mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
-    mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
-    mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
-    mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
-    mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
-    mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
+        reloadgrid()
+    
+        searched = sqlquerytitlesearch(title)
+        mymain.tbllibrarysearched.setItem(0,0, QTableWidgetItem(str(searched[0])))
+        mymain.tbllibrarysearched.setItem(0,1, QTableWidgetItem(str(searched[1])))
+        mymain.tbllibrarysearched.setItem(0,2, QTableWidgetItem(searched[2]))
+        mymain.tbllibrarysearched.setItem(0,3, QTableWidgetItem(searched[3]))
+        mymain.tbllibrarysearched.setItem(0,4, QTableWidgetItem(searched[4]))
+        mymain.tbllibrarysearched.setItem(0,5, QTableWidgetItem(searched[5]))
 
 def mainaddnewentry():     #mymain
     
