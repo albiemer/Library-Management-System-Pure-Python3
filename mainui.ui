@@ -34,7 +34,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../Pictures/screengrab/screen-2022-10-26-18-21-23.jpg</pixmap>
+     <pixmap>Images/header.jpg</pixmap>
     </property>
    </widget>
    <widget class="QFrame" name="frame">
